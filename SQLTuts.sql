@@ -33,19 +33,19 @@ Branch VARCHAR(25),
 Semester INT
 );
 
--- 6. altering table
--- syntax: ALTER TABLE tableName
+-- 8. altering table
+-- syntax: ALTER TABLE tableName //common for everything
 -- ADD col1 datatype1,
 -- ADD col2 datatype2;
 ALTER TABLE students
 ADD Email VARCHAR(50),
 Address VARCHAR(60);
 
+ALTER TABLE students
+DROP COLUMN Semester
 
-
--- 5. Check the schema
---syntax SP_HELP tableName
-SP_HELP students;
+ALTER TABLE students
+ALTER COLUMN Branch VARCHAR(40);
 
 --6. Inserting data
 --syntax INSERT INTO tableName VALUES(val1,val2,....);
@@ -62,11 +62,92 @@ INSERT INTO students VALUES(105,'Shyam'); --it throws an error
 INSERT INTO students(StudentId,FirstName,Semester) VALUES(104, 'Saroj',5);
 
 
--- select query
+-- 9. updating table value
+-- syntax: UPDATE tableName
+-- SET colname1 = colval1, colname2 = colval2
+-- WHERE this = this // here where is used to filterout the table value to change.
+UPDATE students
+SET LastName = 'Karki'
+WHERE StudentId = 104;
+
+UPDATE students 
+SET Email  = 'abc@gmail.com', FirstName = 'Hari'
+WHERE LastName = 'Karki';
+
+UPDATE students 
+SET Email  = 'saroj@gmail.com', FirstName = 'Saroj', LastName = 'Tamang'
+WHERE StudentId = 104;
+
+
+-- 10. CONSTRAINT nameOfTheConstraint //syntax for writting Constraint //eg: pkColumnName general practise for Constraint name
+CREATE TABLE Student(
+StudentId INT CONSTRAINT pkStudentId PRIMARY KEY,
+FirstName VARCHAR(50) NOT NULL,
+LastName VARCHAR(50),
+BranchId INT CONSTRAINT fkBranchId FOREIGN KEY REFERENCES Branch(BranchId),
+Email VARCHAR(60) CONSTRAINT unqEmail UNIQUE 
+);
+
+-- Testing Student table
+INSERT INTO Student VALUES(1,'Manav','Sharma',100,'manish@test.com');
+INSERT INTO Student VALUES(2,'Bobby','Pal',102,'manav@test.com');
+INSERT INTO Student VALUES(3,'Manish','Mehta',104,'bobby@test.com');
+--INSERT INTO Student VALUES(1,'Manav','Sharma',103,'manish@test.com');
+INSERT INTO Student(StudentId,FirstName,BranchId)VALUES(4,'Raju',102);
+INSERT INTO Student(StudentId,FirstName,BranchId,Email)VALUES(5,'Shyam',104,'shyam@test.com');
+
+UPDATE Student
+SET LastName='Dhungana' 
+WHERE StudentId=5;
+
+CREATE TABLE Branch(
+BranchId INT CONSTRAINT pkBranchId PRIMARY KEY,
+BranchName VARCHAR(20),
+Capacity INT CONSTRAINT defCapacity DEFAULT 200 
+);
+
+-- 11. ALTER TABLE TO ADD CONSTRAINT
+ALTER TABLE Branch
+ADD CONSTRAINT chkBranchName CHECK (BranchName IN ('EE','CSE','ECE','ME','IT'));
+
+-- Testing Branch table
+INSERT INTO Branch VALUES(100,'EE',200);
+INSERT INTO Branch VALUES(101,'CSE',200);
+INSERT INTO Branch VALUES(102,'ECE',150);
+INSERT INTO Branch VALUES(103,'ME',150);
+
+INSERT INTO Branch(BranchId,BranchName) VALUES(104,'IT');
+
+--INSERT INTO Branch VALUES(105,'AI',140);
+
+
+
+
+
+
+
+
+
+
+
+DELETE FROM Branch WHERE BranchId=104;
+DELETE FROM Student WHERE StudentId=2;
+
+SELECT * FROM Branch;
+
+
+-- 7. select query
 -- syntax: SELECT * FROM tableName; retrive all data from table
 -- syntax: SELECT clo1,col2 FROM tableName; retrive specific column data
 -- syntax : SELECT * FROM tableName WHERE id = 2; retrive specific row data
-SELECT * FROM students;
+SELECT * FROM Student;
 
+
+-- 5. Check the schema
+--syntax SP_HELP tableName
+SP_HELP Student;
+
+
+--DROP TABLE Student;
 
 
